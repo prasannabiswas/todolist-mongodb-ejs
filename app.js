@@ -140,6 +140,7 @@ app.get("/:customListName",(req,res)=>{
       });
       list.save();
       res.redirect("/"+customListName);
+      // res.redirect(`/${customListName}`); // Above code alternative
     }
   })
   .catch((err)=>{
