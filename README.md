@@ -2,7 +2,7 @@
 
 <h1> To run this app follow these steps - <h1/>
 <h3> Step 1 - <h3/>
-<h4> Fork or download the folder open terminal of this folder directory <h4/>
+<h4> Fork or download the project, open terminal of this folder directory <h4/>
 <h5> npm i <h5/>
 <h5> npm i dotenv mongoose body-parser lodash express mongodb <h5/>
 
