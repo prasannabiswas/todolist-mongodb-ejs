@@ -1,19 +1,37 @@
 const express = require("express");
+require('dotenv').config(); 
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose"); 
-const { name } = require("ejs");
+const _ = require("lodash");
 
 // const date = require(__dirname + "/date.js");
 
 const app = express();
 app.set('view engine', 'ejs');
 
-mongoose.connect("mongodb://0.0.0.0:27017/todolistdb",{
+// For local host connect
+const localhost = "mongodb://0.0.0.0/27017:/todolistdb";
+
+// Main mongoose->mongodb cluster connect Template
+mongoose.connect(process.env.MONGO_URI,{
   useNewUrlParser: true, 
   useUnifiedTopology:true
 })
-.then(()=>console.log("Connected to DB."))
+.then(()=>console.log("Connected to DB.")) 
 .catch((err)=>console.log(err));
+
+// Alternative Code for mongoose->mongodb cluster connect to Cluster
+// mongoose.set('strictQuery', false);
+// const connectDB = async ()=>{
+//   try{
+//     const conn = await mongoose.connect(process.env.MONGO_URI);
+//     console.log(`MongoDB Connected: ${conn.connection.host}`);
+//   }
+//   catch (err){
+//     console.log(err);
+//   }
+// }
+// connectDB();
 
 const itemsSchema = new mongoose.Schema ({
   name : String
@@ -61,7 +79,7 @@ app.get("/", function(req, res) {
 app.post("/", function(req, res){
   const itemName = req.body.newItem;
   const listName = req.body.list;
-
+  
   const item = new Item({
     name: itemName
   });
@@ -70,7 +88,7 @@ app.post("/", function(req, res){
     item.save();
     res.redirect("/");
   }
-  else {
+  else{
     List.findOne({name: listName})
     .then((foundList)=>{
       foundList.items.push(item);
@@ -84,25 +102,38 @@ app.post("/", function(req, res){
 
 app.post("/delete",(req,res)=>{
   const checkedItemId = req.body.checkbox;
-  Item.findByIdAndRemove(checkedItemId)
-  .then(()=>console.log("Item deleted with id "+checkedItemId))
-  .catch((err)=>console.log(err));
+  const listName = req.body.listName;
 
-  res.redirect("/");
+  if(listName === "Today"){
+    Item.findByIdAndRemove(checkedItemId)
+    .then(()=>console.log("Item deleted with id "+checkedItemId))
+    .catch((err)=>console.log(err));
+
+    res.redirect("/");
+  }
+  else{
+    List.findOneAndUpdate({name:listName}, {$pull:{items:{_id:checkedItemId}}})
+    .then(()=>{console.log(`Item deleted with id ${checkedItemId}`)})
+    .catch((err)=>console.log(err));
+
+    res.redirect("/"+listName);
+  }
+
+  
 });
 
 app.get("/:customListName",(req,res)=>{
-  const customListName =  req.params.customListName;
+  const customListName =  _.capitalize(req.params.customListName);
 
   
   List.findOne({name: customListName})
   .then((foundList)=>{
     if(foundList){
-      console.log("Exist's!");
+      // console.log("Exist's!");
       res.render("list", {listTitle: customListName, newListItems: foundList.items})
     }
     else{
-      console.log("Doesn't Exist!");
+      // console.log("Doesn't Exist!");
       const list = new List ({
         name: customListName,
         items: defaultItems
