@@ -5,7 +5,7 @@
 <h3> Step 1 - <h3/>
 <h4> Fork or download the project, open terminal of this folder directory <h4/>
 <h5> npm i <h5/>
-<h5> npm i dotenv mongoose body-parser lodash express mongodb <h5/>
+<h5> npm i node dotenv mongoose body-parser lodash express mongodb <h5/>
 
 
 <h3> Step 2 - <h3/>
