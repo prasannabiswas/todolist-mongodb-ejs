@@ -1,4 +1,5 @@
 # todolist-mongodb-ejs - https://shy-puce-kangaroo-tux.cyclic.app
+<p>Starting morning in a productive way is too much important for us as a coder as we have to keep on track and sort our daily routine. Scheduling time for cooking, meeting friends, reviewing codes all this needs a good breakdown so that not each one of then overlaps. <p/>
 
 <h1> To run this app follow these steps - <h1/>
 <h3> Step 1 - <h3/>
